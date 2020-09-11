@@ -1,0 +1,785 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewBag.Page = "Dashboard";
+}
+
+
+<partial name="~/views/shared/_topbarpartial.cshtml" />
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info">
+                <span class="card-title">Tags:</span>
+            </div>
+            <div class="card-body">
+                <div id="tag-div" class="container-list" style="height:250px;">
+                    <table class="table table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>AddedOn</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tag-tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <a class="btn btn-info btn-sm text-right" data-toggle="modal" data-target="#new-tag-modal">Add tag</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-secondary">
+                <span class="card-title">Authors:</span>
+            </div>
+            <div class="card-body">
+                <div id="author-div" class="container-list" style="height:250px;">
+                    <table class="table table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>AddedOn</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="author-tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm text-right" data-toggle="modal" data-target="#new-author-modal">Add author</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-light">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <span class="card-title">Articles:</span>
+                    </div>
+                    <div class="col-md-6 col-sm-6 text-right">
+                        <a href="~/dashboard/newarticle" class="btn btn-outline-info btn-sm">New article</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div id="article-div" style="height:250px;" class="container-list">
+                    <table class="table table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Comments</th>
+                                <th>AddedOn</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="article-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="new-author-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New author form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>First name</label>
+                                    <input id="fname" name="FirstName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Last name</label>
+                                    <input id="lname" name="LastName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="authBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-author-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit author form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <input type="hidden" id="edit-id" name="Id" />
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>First name</label>
+                                    <input id="edit-fname" name="FirstName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Last name</label>
+                                    <input id="edit-lname" name="LastName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeEditBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="editBtn">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="new-tag-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New tag form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="tagform">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tag name</label>
+                                    <input id="tagName" name="Name" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeTagBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="tagBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="edit-tag-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New tag form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="editTagform">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tag name</label>
+                                    <input id="edit-tagName" name="Name" type="text" class="form-control" />
+                                    <input id="edit-tagId" name="Id" type="hidden" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeeditTagBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="editTagBtn">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="view-comments-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Comment for [<span id="artitleTitle"></span>]</h5>
+            </div>
+            <div class="modal-body">
+                <div id="comment-div" class="container-list" style="height:250px;">
+                    <table class="table table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Message</th>
+                                <th>AddedOn</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comment-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            const loadAuthors = () => {
+
+                run_waitMe($('#author-div'), 3, 'loading');
+
+                fetch(`${window.location.origin}/author/loadall`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        let d = ``;
+                        result.forEach((el, index) => {
+                            d += `
+                                <tr>
+                                    <td>${el.index}</td>
+                                    <td>${el.firstName}</td>
+                                    <td>${el.lastName}</td>
+                                    <td>${el.addedOn}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm edit_author" data-id='${el.id}'>edit</button>
+                                        <button class="btn btn-outline-danger btn-sm delete_author" data-id='${el.id}'>delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        if (result.length == 0) {
+                            d = `<tr><td class='text-center' colspan='5'>No data found</td></tr>`;
+                        }
+
+                        $('#author-div').waitMe('hide');
+                        $('#author-tbody').html(d);
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#author-div').waitMe('hide');
+                    });
+            };
+
+            const loadTags = () => {
+                run_waitMe($('#tag-div'), 3, 'loading');
+                fetch(`${window.location.origin}/tags/loadall`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        let d = ``;
+                        result.forEach((el, index) => {
+                            d += `
+                                <tr>
+                                    <td>${el.index}</td>
+                                    <td>${el.name}</td>
+                                    <td>${el.addedOn}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm edit_tag" data-id='${el.id}'>edit</button>
+                                        <button class="btn btn-outline-danger btn-sm delete_tag" data-id='${el.id}'>delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        if (result.length == 0) {
+                            d = `<tr><td class='text-center' colspan='4'>No data found</td></tr>`;
+                        }
+                        $('#tag-div').waitMe('hide');
+                        $('#tag-tbody').html(d);
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#tag-div').waitMe('hide');
+                    });
+            }
+
+            const loadArticles = () => {
+                run_waitMe($('#article-div'), 3, 'loading');
+                fetch(`${window.location.origin}/articles/loadall`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        let d = ``;
+                        result.forEach((el, index) => {
+                            d += `
+                                <tr>
+                                    <td>${el.index}</td>
+                                    <td>${el.title}</td>
+                                    <td>${el.author}</td>
+                                    <td>${el.comments.length}</td>
+                                    <td>${el.addedOn}</td>
+                                    <td>
+                                        <a href="${window.location.origin}/articles/viewarticle?id=${el.id}" class="btn btn-outline-success btn-sm view_article" data-id="${el.id}">view</a>
+                                        <!--<a href="${window.location.origin}/articles/editarticle?id=${el.id}" class="btn btn-outline-primary btn-sm edit_article" data-id="${el.id}">edit</a>-->
+                                        <button class="btn btn-outline-info btn-sm comment_article" data-id="${el.articleId}">comment(s)</button>
+                                        <button class="btn btn-outline-danger btn-sm delete_article" data-id="${el.id}">delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        if (result.length == 0) {
+                            d = `<tr><td class='text-center' colspan='6'>No data found</td></tr>`;
+                        }
+                        $('#article-div').waitMe('hide');
+                        $('#article-tbody').html(d);
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#article-div').waitMe('hide');
+                    });
+            }
+
+            loadAuthors();
+
+            loadTags();
+
+            loadArticles();
+
+            $('#authBtn').click(async () => {
+
+                run_waitMe($('#form'), 3, 'adding');
+                const fname = $('#fname').val();
+                const lname = $('#lname').val();
+                if (!fname || !lname) {
+                    showNotification('Oops', 'fill in both first and last name is required', 'warning');
+                    $('#form').waitMe('hide');
+                    return;
+                }
+
+                const formdData = $('#form').serialize();
+
+                fetch(`${window.location.origin}/author/addnew?${formdData}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#form').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        showNotification('Great', response.message, 'success');
+                        $('#fname').val('');
+                        $('#lname').val('');
+                        $('#new-author-modal').modal('hide');
+
+                        loadAuthors();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#form').waitMe('hide');
+                    })
+
+            });
+
+            $('#editBtn').click(async () => {
+
+                run_waitMe($('#edit-form'), 3, 'editing');
+                const fname = $('#edit-fname').val();
+                const lname = $('#edit-lname').val();
+                if (!fname || !lname) {
+                    showNotification('Oops', 'fill in both first and last name is required', 'warning');
+                    $('#edit-form').waitMe('hide');
+                    return;
+                }
+
+                const authorView = $('#edit-form').serialize();
+                fetch(`${window.location.origin}/author/edit?${authorView}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#edit-form').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        showNotification('Great', response.message, 'success');
+                        $('#edit-fname').val('');
+                        $('#edit-lname').val('');
+                        $('#edit-author-modal').modal('hide');
+
+                        loadAuthors();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#edit-form').waitMe('hide');
+                    })
+
+            });
+
+            $('#tagBtn').click(() => {
+                run_waitMe($('#tagform'), 3, 'adding');
+                const tagName = $('#tagName').val();
+                if (!tagName) {
+                    showNotification('Oops', 'Tag name is required', 'warning');
+                    $('#tagform').waitMe('hide');
+                    return;
+                }
+
+                const formdData = $('#tagform').serialize();
+                fetch(`${window.location.origin}/tags/addnew?${formdData}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#tagform').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        $('#tagform').val('');
+                        $('#new-tag-modal').modal('hide');
+                        loadTags();
+                        showNotification('Great', response.message, 'success');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#tagform').waitMe('hide');
+                    })
+            });
+
+            $('#editTagBtn').click(async () => {
+
+                run_waitMe($('#editTagform'), 3, 'editing');
+                const tagName = $('#edit-tagName').val();
+                if (!tagName) {
+                    showNotification('Oops', 'set a tag name is required', 'warning');
+                    $('#editTagform').waitMe('hide');
+                    return;
+                }
+
+                const authorView = $('#editTagform').serialize();
+                fetch(`${window.location.origin}/tags/edit?${authorView}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#editTagform').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        showNotification('Great', response.message, 'success');
+                        $('#edit-tag-modal').modal('hide');
+
+                        loadTags();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#editTagform').waitMe('hide');
+                    })
+
+            });
+
+            $('#closeBtn').click(() => {
+                $('#fname').val('');
+                $('#lname').val('');
+                $('#form').waitMe('hide');
+                $('#new-author-modal').modal('hide');
+            });
+
+            $('#closeeditTagBtn').click(() => {
+                $('#edit-tagName').val('');
+                $('#editTagform').waitMe('hide');
+                $('#edit-tag-modal').modal('hide');
+            });
+
+            $('#closeTagBtn').click(() => {
+                $('#tagName').val('');
+                $('#tagform').waitMe('hide');
+                $('#new-tag-modal').modal('hide');
+            });
+
+            $('#closeEditBtn').click(() => {
+                $('#edit-fname').val('');
+                $('#edit-lname').val('');
+                $('#edit-form').waitMe('hide');
+                $('#edit-author-modal').modal('hide');
+            });
+
+            $(document).on('click', '.edit_author', (event) => {
+                var idEl = event.target.attributes['data-id'];
+                fetch(`${window.location.origin}/author/load/${idEl.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#edit-fname').val(response.firstName);
+                        $('#edit-lname').val(response.lastName);
+                        $('#edit-id').val(response.id);
+                        $('#edit-author-modal').modal('show');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+            });
+
+            $(document).on('click', '.delete_author', (event) => {
+                var idEl = event.target;
+                idEl.innerHTML = 'deleting';
+                var id = idEl.attributes['data-id'];
+
+                console.log(id.value);
+                fetch(`${window.location.origin}/author/delete/${id.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            idEl.innerHTML = 'delete';
+                            return;
+                        }
+
+                        showNotification('Great', response.message, 'success');
+                        loadAuthors();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                    })
+            });
+
+            $(document).on('click', '.edit_tag', (event) => {
+                var idEl = event.target.attributes['data-id'];
+                fetch(`${window.location.origin}/tags/load/${idEl.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#edit-tagName').val(response.name);
+                        $('#edit-tagId').val(response.id);
+                        $('#edit-tag-modal').modal('show');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+            });
+
+            $(document).on('click', '.delete_tag', (event) => {
+                var idEl = event.target;
+                idEl.innerHTML = 'deleting';
+                var id = idEl.attributes['data-id'];
+
+                console.log(id.value);
+                fetch(`${window.location.origin}/tags/delete/${id.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            idEl.innerHTML = 'delete';
+                            return;
+                        }
+
+                        showNotification('Great', response.message, 'success');
+                        loadTags();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                    })
+            });
+
+            $(document).on('click', '.comment_article', (event) => {
+                var element = event.target;
+                $('#artitleTitle').html(element.parentNode.parentNode.childNodes[3].innerHTML);
+                var id = element.attributes['data-id'];
+                console.log(element);
+                run_waitMe($('#comment-div'), 3, 'loading');
+                fetch(`${window.location.origin}/comments/loadall?articleId=${id.value}`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        let d = ``;
+                        result.forEach((el, index) => {
+                            d += `
+                                <tr>
+                                    <td>${el.index}</td>
+                                    <td>${el.name}</td>
+                                    <td>${el.message}</td>
+                                    <td>${el.addedOn}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm approve_comment" data-id='${el.id}'>approve/deny</button>
+                                        <button class="btn btn-outline-danger btn-sm delete_comment" data-id='${el.id}'>delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        if (result.length == 0) {
+                            d = `<tr><td class='text-center' colspan='5'>No data found</td></tr>`;
+                        }
+                        $('#comment-div').waitMe('hide');
+                        $('#comment-tbody').html(d);
+
+                        $('#view-comments-modal').modal('show');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#comment-div').waitMe('hide');
+                    });
+            });
+
+            $(document).on('click', '.delete_article', (event) => {
+                var idEl = event.target;
+                idEl.innerHTML = 'deleting';
+                var id = idEl.attributes['data-id'];
+
+                console.log(id.value);
+                fetch(`${window.location.origin}/articles/delete/${id.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            idEl.innerHTML = 'delete';
+                            return;
+                        }
+
+                        showNotification('Great', response.message, 'success');
+
+                        loadArticles();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                    })
+            });
+            
+            $(document).on('click', '.delete_comment', (event) => {
+                var idEl = event.target;
+                idEl.innerHTML = 'deleting';
+                var id = idEl.attributes['data-id'];
+
+                console.log(id.value);
+                fetch(`${window.location.origin}/comments/delete/${id.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            idEl.innerHTML = 'delete';
+                            return;
+                        }
+
+                        showNotification('Great', response.message, 'success');
+
+                        $('#view-comments-modal').modal('hide');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                    })
+            });
+            
+            $(document).on('click', '.approve_comment', (event) => {
+                var idEl = event.target;
+                idEl.innerHTML = 'deleting';
+                var id = idEl.attributes['data-id'];
+
+                console.log(id.value);
+                fetch(`${window.location.origin}/comments/approve/${id.value}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            idEl.innerHTML = 'delete';
+                            return;
+                        }
+
+                        showNotification('Great', response.message, 'success');
+
+                        $('#view-comments-modal').modal('hide');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                    })
+            });
+        })
+    </script>
+}

@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Niche">
+    <meta name="description" content="">
+
+    <title>Niche Tours &amp; Travels</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/css/animate.css">
+    <link rel="stylesheet" href="~/css/slick.css">
+    <link rel="stylesheet" href="~/css/jplayer.css">
+    <link rel="stylesheet" href="~/css/main.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/css/waitMe.min.css" rel="stylesheet" />
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Signika+Negative" rel="stylesheet">
+    <link href="~/css/summernote.css" rel="stylesheet" />
+
+    <link rel="icon" href="~/images/logo.ico">
+
+
+    <style>
+        div.container-list {
+            overflow-y: scroll;
+        }
+
+        td, tr, th {
+            white-space: nowrap;
+        }
+
+            td.over {
+                max-width: 100px;
+                height: 60px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper tr-page-top homepage">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3 tr-sidebar tr-sticky">
+                    <div class="theiaStickySidebar">
+                        <div class="tr-menu sidebar-menu">
+                            <nav class="navbar navbar-default navbar-expand-lg">
+                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"><i class="fa fa-align-justify"></i></span>
+                                </button>
+                                <a class="navbar-brand" href="~/"><img class="img-fluid" src="~/images/logo.png" alt="Logo"></a>
+
+                                <span class="discover">Let's go!</span>
+
+                                <div class="collapse navbar-collapse" id="navbarNav">
+                                    <ul class="nav navbar-nav">
+                                        <li><a href="~/"><i class="fas fa-home" aria-hidden="true"></i>&nbsp;&nbsp;Home</a></li>
+                                        <li><a href="~/home/about">&nbsp;<i class="fa fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;About</a></li>
+                                        <li><a href="~/home/contact"><i class="fa fa-phone-alt" aria-hidden="true"></i>&nbsp;&nbsp;Contact Us</a></li>
+                                    </ul>
+                                </div>
+                            </nav><!-- /navbar -->
+                        </div><!-- /left-memu -->
+                    </div><!-- /.theiaStickySidebar -->
+                </div>
+                <div class="col-lg-9">
+
+                    @RenderBody()
+
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fulid -->
+    </div><!-- /.main-wrapper -->
+
+    <footer id="footer">
+        <div class="footer-menu">
+            <div class="container">
+                <ul class="nav navbar-nav">
+                    @{
+                        if (HttpContextAccessor.HttpContext.Session.GetString("account") == null)
+                        {
+                            <li><a href="#" id="login">Login</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <address>
+                        <p>
+                            &copy; @DateTime.UtcNow.Year
+
+                            <a href="index.html">Niche Tours and Travel</a>.
+
+                            <br /><i class="fa fa-envelope"></i> &nbsp; Email: <a href="mailto:info@nichetoursandtravels.com">nichetoursandtravelug@gmail.com</a>
+                            <br />
+                            <i class="fa fa-map-marker"></i> &nbsp; Victors Tavern Hotel, Plot 652 Kiwatule Road, Kampala, Uganda
+                            <br><i class="fab fa-whatsapp"></i> &nbsp; +256 793262998
+                            <br><i class="fa fa-phone"></i> &nbsp; +256 706731842
+                        </p>
+                    </address>
+                </div><!-- /.footer-bottom-content -->
+            </div><!-- /.container -->
+        </div><!-- /.footer-bottom -->
+    </footer><!-- /#footer -->
+    <!-- JS -->
+    <script data-cfasync="false" src="~/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/marquee.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/theia-sticky-sidebar.min.js"></script>
+    <script src="~/js/jquery.jplayer.min.js"></script>
+    <script src="~/js/jplayer.playlist.min.js"></script>
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/js/carouFredSel.js"></script>
+    <script src="~/js/magnific-popup.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/fount-awesome.min.js"></script>
+    <script src="~/js/waitMe.min.js"></script>
+    <script src="~/js/sweetalert2.all.min.js"></script>
+
+    <script src="~/js/site.js"></script>
+    <script src="~/js/summernote.js"></script>
+
+
+    <script>
+        $(document).ready(() => {
+            fetch(`${window.location.origin}/articles/loadlatest`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                })
+                .then(result => {
+                    let rNav = ``;
+                    result.forEach((el, index) => {
+                        rNav += `<li><a href="${window.location.origin}/articles/viewarticle?id=${el.id}">${el.title}</a></li>`;
+                    });
+                    $('#tt').html(rNav);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+
+
+
+            $('#login').click(async (event) => {
+                event.preventDefault();
+                const {value: formvalues} = await Swal.fire({
+                    title: 'Login Form',
+                    html:
+                        `<input class="swal2-input" id="username" placeholder="Enter username"/>
+                         <input class="swal2-input" id="password" type="password" placeholder="Enter password"/>`,
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        return [document.getElementById('username').value,
+                        document.getElementById('password').value]
+                    }
+                })
+                if (formvalues) {
+                    run_waitMe($('body'), 3, 'loging you in');
+                    console.log(formvalues);
+                    fetch(`${window.location.origin}/account/login?username=${formvalues[0]}&password=${formvalues[1]}`)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                        })
+                        .then(result => {
+                            $('body').waitMe('hide');
+                            if (!result.check) {
+                                showNotification('Oops', result.message, 'warning');
+                                return;
+                            }
+                            window.location.href = window.location.origin + '/dashboard';
+                        })
+                }
+            })
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+
+
+</html>	

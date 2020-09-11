@@ -1,0 +1,523 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    ViewBag.Page = "Dashboard";
+
+}
+
+<partial name="~/views/shared/_topbarpartial.cshtml" />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info">
+                <span class="card-title">About Us</span>
+            </div>
+            <div class="card-body">
+                <div class="card-body">
+                    <div id="about-div" class="container-list" style="height:250px;">
+                        <table class="table table-hover table-responsive-sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Text</th>
+                                    <th>Status</th>
+                                    <th>Added On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="about-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <br />
+                    <a class="btn btn-info btn-sm text-right" data-toggle="modal" data-target="#new-about-modal">Add new about</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">New user info</span>
+            </div>
+            <div class="card-body">
+                <div id="" class="">
+                    <form id="user-form" action="~/account/CreateAccount" method="post">
+                        <div class="form-group">
+                            <input class="form-control" name="name" type="text" placeholder="Enter display name" />
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="username" type="text" placeholder="Enter username" />
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="password" type="password" placeholder="Enter password" />
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="confirmpassword" type="password" placeholder="Confirm password" />
+                        </div>
+                        <button type="submit" id="add-user-btn" class="btn btn-success btn-sm">Add user</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="all-account-div" class="container-list" style="height:250px;">
+                    <table class="table table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-account-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="new-about-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New about form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="about-form" method="post" enctype="multipart/form-data" action="settings/SaveAbout">
+
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input name="title" id="title" class="form-control" placeholder="Enter title" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>About us text</label>
+                        <textarea class="form-control" rows="5" id="body" name="body"></textarea>
+                    </div>
+                    <hr />
+
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-success" id="aboutBtn">Add</button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-about-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit about form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="edit-about-form" method="post" enctype="multipart/form-data" action="settings/editAbout">
+
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input name="title" id="edit-title" class="form-control" placeholder="Enter title" />
+                    </div>
+
+                    <input name="id" type="hidden" id="edit-id" class="form-control" placeholder="Enter title" />
+                    <div class="form-group">
+                        <label>About us text</label>
+                        <textarea class="form-control" rows="5" id="edit-body" name="body"></textarea>
+                    </div>
+                    <hr />
+
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-success" id="aboutEditBtn">Edit</button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $('#body').summernote({
+            placeholder: 'Write something',
+            tabsize: 4,
+            height: 200
+        });
+
+        const loadAbouts = () => {
+
+            run_waitMe($('#about-div'), 3, 'loading');
+
+            fetch(`${window.location.origin}/settings/LoadAbouts`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                })
+                .then(result => {
+                    let d = ``;
+                    result.forEach((el, index) => {
+
+                        var activate = 'activate';
+                        if (el.isSelected != '-') {
+                            activate = 'deactivate';
+                        }
+
+                        d += `
+                                                            <tr>
+                                                                <td>${el.index}</td>
+                                                                <td>${el.title}</td>
+                                                                <td class='over'>${el.body}</td>
+                                                                <td>${el.isSelected}</td>
+                                                                <td>${el.addedOn}</td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-primary btn-sm edit_about" data-id='${el.id}'>edit</button>
+                                                                    <button class="btn btn-outline-info btn-sm activate_about" data-id='${el.id}'>${activate}</button>
+                                                                    <button class="btn btn-outline-danger btn-sm delete_about" data-id='${el.id}'>delete</button>
+                                                                </td>
+                                                            </tr>`;
+                    });
+                    if (result.length == 0) {
+                        d = `<tr><td class='text-center' colspan='5'>No data found</td></tr>`;
+                    }
+
+                    $('#about-div').waitMe('hide');
+                    $('#about-tbody').html(d);
+
+                })
+                .catch(err => {
+                    console.log(err);
+                    $('#about-div').waitMe('hide');
+                });
+        };
+
+        const loadAccounts = () => {
+
+            run_waitMe($('#all-account-div'), 3, 'loading');
+
+            fetch(`${window.location.origin}/account/LoadAll`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                })
+                .then(result => {
+                    let d = ``;
+                    result.forEach((el, index) => {
+
+                        d += `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${el.name}</td>
+                                    <td>${el.username}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm edit_account_name" data-id='${el.id}'>edit name</button>
+                                        <button class="btn btn-outline-info btn-sm change_account_password" data-id='${el.id}'>change password</button>
+                                        <button class="btn btn-outline-danger btn-sm delete_about" data-id='${el.id}'>delete</button>
+                                    </td>
+                                </tr>`;
+                    });
+                    if (result.length == 0) {
+                        d = `<tr><td class='text-center' colspan='3'>No data found</td></tr>`;
+                    }
+
+                    $('#all-account-div').waitMe('hide');
+                    $('#all-account-tbody').html(d);
+
+                })
+                .catch(err => {
+                    console.log(err);
+                    $('#all-account-div').waitMe('hide');
+                });
+        };
+
+        loadAbouts();
+        loadAccounts();
+        $('#aboutBtn').click(() => {
+            $('#about-form').submit(function (event) {
+                run_waitMe($('#about-form'), 3, 'posting');
+                event.preventDefault(); //prevent default action
+                var post_url = $('#about-form').attr("action"); //get form action url
+                var request_method = $('#about-form').attr("method"); //get form GET/POST method
+                var viewModel = new FormData(this); //Encode form elements for submission
+
+                $.ajax({
+                    url: post_url,
+                    method: request_method,
+                    data: viewModel,
+                    contentType: false,
+                    cache: false,
+                    processData: false
+                }).done(function (response) { //
+                    $('#about-form').waitMe('hide');
+                    console.log(response.message)
+                    if (!response.check) {
+                        showNotification('Oops', response.message, 'warning');
+                        return;
+                    }
+                    showNotification('Great', response.message, 'success');
+
+                    $('#title').val('');
+                    $('#body').summernote('reset');
+                    $('#new-about-modal').modal('hide');
+                    loadAbouts();
+                });
+            });
+        });
+        $('#aboutEditBtn').click(() => {
+            $('#edit-about-form').submit(function (event) {
+                run_waitMe($('#edit-about-form'), 3, 'posting');
+                event.preventDefault(); //prevent default action
+                var post_url = $('#edit-about-form').attr("action"); //get form action url
+                var request_method = $('#edit-about-form').attr("method"); //get form GET/POST method
+                var viewModel = new FormData(this); //Encode form elements for submission
+
+                $.ajax({
+                    url: post_url,
+                    method: request_method,
+                    data: viewModel,
+                    contentType: false,
+                    cache: false,
+                    processData: false
+                }).done(function (response) { //
+                    $('#edit-about-form').waitMe('hide');
+                    console.log(response.message)
+                    if (!response.check) {
+                        showNotification('Oops', response.message, 'warning');
+                        return;
+                    }
+                    showNotification('Great', response.message, 'success');
+                    $('#edit-about-modal').modal('hide');
+                    loadAbouts();
+                });
+            });
+
+        });
+
+        $('#add-user-btn').click(() => {
+            $('#user-form').submit(function (event) {
+                run_waitMe($('#user-form'), 3, 'adding');
+                event.preventDefault(); //prevent default action
+                var post_url = $('#user-form').attr("action"); //get form action url
+                var request_method = $('#user-form').attr("method"); //get form GET/POST method
+                var viewModel = new FormData(this); //Encode form elements for submission
+
+                $.ajax({
+                    url: post_url,
+                    method: request_method,
+                    data: viewModel,
+                    contentType: false,
+                    cache: false,
+                    processData: false
+                }).done(function (response) { //
+                    $('#user-form').waitMe('hide');
+                    console.log(response.message)
+                    if (!response.check) {
+                        showNotification('Oops', response.message, 'warning');
+                        return;
+                    }
+                    showNotification('Great', response.message, 'success');
+                    $('#user-form').modal('hide');
+                    loadAbouts();
+                });
+            });
+
+        })
+
+
+        $(document).on('click', '.edit_about', (event) => {
+            var element = event.target;
+            $('#artitleTitle').html(element.parentNode.parentNode.childNodes[3].innerHTML);
+            var id = element.attributes['data-id'];
+
+            run_waitMe($('#edit-about-form'), 3, 'posting');
+            fetch(`${window.location.origin}/settings/loadabout/${id.value}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                })
+                .then(result => {
+                    console.log(result);
+                    $('#edit-title').val(result.title);
+                    $('#edit-body').html(result.body);
+                    $('#edit-id').val(result.id);
+
+                    $('#edit-body').summernote({
+                        placeholder: 'Write something',
+                        tabsize: 4,
+                        height: 200
+                    });
+
+                    $('#edit-about-modal').modal('show');
+                    $('#edit-about-form').waitMe('hide');
+                })
+                .catch(err => {
+                    console.log(err);
+                    $('#edit-about-form').waitMe('hide');
+                });
+        });
+
+        $(document).on('click', '.delete_about', (event) => {
+            var idEl = event.target;
+            idEl.innerHTML = 'deleting';
+            var id = idEl.attributes['data-id'];
+
+            console.log(id.value);
+            fetch(`${window.location.origin}/settings/deleteabout/${id.value}`)
+                .then(result => {
+                    if (result.ok) {
+                        return result.json();
+                    }
+                })
+                .then(response => {
+                    if (!response.check) {
+                        showNotification('Oops', response.message, 'warning');
+                        idEl.innerHTML = 'delete';
+                        return;
+                    }
+
+                    showNotification('Great', response.message, 'success');
+
+                    loadAbouts();
+                })
+                .catch(err => {
+                    console.log(err);
+                    showNotification('Oops', err, 'warning');
+                })
+        });
+
+
+        $(document).on('click', '.activate_about', (event) => {
+            var idEl = event.target;
+            idEl.innerHTML = 'activation';
+            var id = idEl.attributes['data-id'];
+
+            console.log(id.value);
+            fetch(`${window.location.origin}/settings/setactive/${id.value}`)
+                .then(result => {
+                    if (result.ok) {
+                        return result.json();
+                    }
+                })
+                .then(response => {
+                    if (!response.check) {
+                        showNotification('Oops', response.message, 'warning');
+                        var activate = 'activate';
+                        if (!el.isSelected) {
+                            activate = 'deactivate';
+                        }
+                        idEl.innerHTML = activate;
+                        return;
+                    }
+
+                    showNotification('Great', response.message, 'success');
+
+                    loadAbouts();
+                })
+                .catch(err => {
+                    console.log(err);
+                    showNotification('Oops', err, 'warning');
+                })
+        });
+
+        $(document).on('click', '.edit_account_name', async (event) => {
+            var idEl = event.target;
+            var id = idEl.attributes['data-id'];
+            const { value: name } = await Swal.fire({
+                title: 'Enter new name',
+                input: 'text',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to write something!'
+                    }
+                }
+            })
+
+            if (name) {
+                
+                run_waitMe($('#all-account-div'), 3, 'loading');
+                fetch(`${window.location.origin}/account/ChangeName?name=${name}&id=${id.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        $('#all-account-div').modal('hide');
+                        if (!data.check) {
+                            showNotification('Oops', data.message, 'warning');
+                            return;
+                        }
+                        showNotification('Great', data.message, 'success');
+                        setTimeout(function () {
+                            window.location.reload(true);
+                        }, 3000);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#all-account-div').modal('hide');
+                    })
+            }
+
+        });
+
+        $(document).on('click', '.change_account_password', async (event) => {
+            var idEl = event.target;
+            var id = idEl.attributes['data-id'];
+
+            const {value: formvalues} = await Swal.fire({
+                    title: 'Login Form',
+                    html:
+                        `<input class="swal2-input" id="oldpassword" type="password" placeholder="Enter old password"/>
+                         <input class="swal2-input" id="newpassword" type="password" placeholder="Enter password"/>`,
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        return [
+                            document.getElementById('oldpassword').value,
+                            document.getElementById('newpassword').value,
+                            document.getElementById('confirmpassword').value
+                        ]
+                    }
+                })
+                if (formvalues) {
+                    run_waitMe($('body'), 3, 'loging you in');
+                    console.log(formvalues);
+                    fetch(`${window.location.origin}/account/login?oldpassword=${formvalues[0]}&newpassword=${formvalues[1]}&confirmpassword=${formvalues[2]}`)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                        })
+                        .then(result => {
+                            $('body').waitMe('hide');
+                            if (!result.check) {
+                                showNotification('Oops', result.message, 'warning');
+                                return;
+                            }
+                            showNotification('Great', result.message, 'success');
+                        })
+                }
+
+        });
+        $(document).on('click', '.delete_about', (event) => {
+            var idEl = event.target;
+            var id = idEl.attributes['data-id'];
+
+
+        });
+
+    </script>
+}

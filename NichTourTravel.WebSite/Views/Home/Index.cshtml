@@ -1,0 +1,132 @@
+﻿@model List<ArticleViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<partial name="~/views/shared/_topbarpartial.cshtml" />
+
+
+<partial name="~/views/shared/_carouselPartial.cshtml" />
+
+<div class="row">
+    <div class="col-md-8">
+
+        <div class="row">
+            @{
+                if (Model != null)
+                {
+
+
+                    foreach (var _article in Model)
+                    {
+                        <div class="col-md-6 medium-post">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="tr-post">
+                                        <div class="entry-header">
+                                            <div class="entry-thumbnail">
+                                                <a href="~/articles/viewarticle?id=@_article.Id"><img class="img-fluid" src="@_article.ImageURl" alt="Image"></a>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            <div class="author">
+                                                <a href="#"><img class="img-fluid img-circle" src="images/others/author3.png" alt="Image"></a>
+                                            </div>
+                                            <div class="entry-meta">
+                                                <ul>
+                                                    <li>By <a href="#">@_article.Author</a></li>
+                                                    <li>@_article.ShareCount Share /<a href="#"> @_article.Duration</a></li>
+                                                </ul>
+                                            </div><!-- /.entry-meta -->
+                                            <h2 class="entry-title">
+                                                <a href="~/articles/viewarticle?id=@_article.Id">@_article.Title</a>
+                                            </h2>
+                                        </div><!-- /.post-content -->
+                                    </div><!-- tr-post -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
+                }
+            }
+        </div>
+
+    </div>
+
+    <div class="col-md-4 tr-sidebar tr-sticky">
+        <partial name="~/views/shared/_homepartial.cshtml" />
+    </div>
+</div><!-- row -->
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            fetch(`${window.location.origin}/articles/loadlatest`)
+                .then(result => result.json())
+                .then(response => {
+                    let d = ``;
+                    let rNav = ``;
+                    response.forEach((el, index) => {
+                        console.log(index);
+                        var _active = '';
+                        if (index == 0) {
+                            _active = 'active';
+                        }
+                        rNav += `
+                                        <li data-target="#home-carousel" data-slide-to="${index}" class="${_active}">
+                                            <span class="catagory">${el.tags}</span>
+                                            <span class="indicators-title">${el.title}</span>
+                                        </li>`;
+                        d += `
+                                        <div class="item carousel-item ${_active}" style=" background-image: url('${window.location.origin}/${el.imageURl}')">
+                                            <div class="post-content">
+                                                <span class="catagory" data-animation="animated fadeInUp"><a href="#">${el.tags}</a></span>
+                                                <h2 class="entry-title" data-animation="animated fadeInUp">
+                                                    <a href="articles/${el.id}">${el.title}</a>
+                                                </h2>
+                                                <div class="entry-meta" data-animation="animated fadeInUp">
+                                                    <ul>
+                                                        <li>By <a href="#">${el.author}</a></li>
+                                                        <li>${el.shareCount} Share /<a href="#"> ${el.duration}</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div><!-- /.post-content -->
+                                        </div><!-- /.item -->`;
+
+                    });
+                    $('.carousel-indicators').html(rNav);
+                    $('.carousel-inner').html(d);
+                })
+                .catch(err => console.log(err));
+
+             fetch(`${window.location.origin}/articles/loadlatest`)
+                .then(result => result.json())
+                .then(response => {
+                    let d = ``;
+                    response.forEach((el, index) => {
+                        d += `
+                        <li class="tr-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <img class="img-fluid" src="${window.location.origin}/${el.imageURl}" alt="Image">
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <div class="catagory">
+                                    <span>${el.tags}</span>
+                                </div>
+                                <h2 class="entry-title">
+                                    ${el.title}
+                                </h2>
+                            </div><!-- /.post-content -->
+                        </li>`;
+                    });
+                    $('#lArticles').html(d);
+                })
+                .catch(err => console.log(err));
+        });
+    </script>
+}

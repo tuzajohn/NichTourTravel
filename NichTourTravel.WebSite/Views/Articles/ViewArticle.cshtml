@@ -1,0 +1,232 @@
+﻿@model ArticleViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="~/views/shared/_topbarpartial.cshtml" />
+
+@{
+    if (Model != null)
+    {
+        <div class="row" style="transform: none;">
+            <div class="col-lg-8 tr-sticky" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+                <div class="tr-content theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none;">
+                    <div class="tr-section">
+                        <div class="tr-post">
+
+                            @{
+                                if (!string.IsNullOrEmpty(Model.ImageURl))
+                                {
+                                    <div class="entry-header">
+                                        <div class="entry-thumbnail">
+                                            <img class="img-fluid" src="@Model.ImageURl" alt="Image">
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="post-content">
+                                <div class="author">
+                                    <img class="img-fluid img-circle" src="~/images/others/user.png" alt="Image">
+                                </div>
+                                <div class="entry-meta">
+                                    <ul>
+                                        <li>By <a href="#">@Model.Author</a></li>
+                                        <li>@Model.ShareCount Share /<a href="#"> @Model.Duration</a></li>
+                                        <li>
+                                            <ul>
+                                                <li>Share</li>
+                                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div><!-- /.entry-meta -->
+                                <h2 class="entry-title">
+                                    @Model.Title
+                                </h2>
+
+                                @{
+                                    if (string.IsNullOrEmpty(Model.ImageURl))
+                                    {
+                                        <div style="height:200px; text-overflow: ellipsis; overflow-y:hidden">
+                                            @Html.Raw(Model.Body)
+                                        </div>
+                                    }
+                                }
+                            </div><!-- /.post-content -->
+                        </div><!-- /.tr-post -->
+
+                        <div class="tr-details">
+                            @Html.Raw(Model.Body)
+                        </div><!-- /.tr-details -->
+                    </div><!-- /.tr-section -->
+
+                    <div class="tr-comment">
+                        <div class="section-title">
+                            <h1><span>Comments</span></h1>
+                        </div>
+                        <ul class="post-comment">
+
+                            @{
+                                if (Model.Comments != null)
+                                {
+                                    foreach (var _comment in Model.Comments)
+                                    {
+                                        <li class="media">
+                                            <div class="commenter-avatar">
+                                                <a href="#"><img class="img-fluid img-circle" src="~/images/others/user.png" alt="Image"></a>
+                                            </div>
+                                            <div class="media-body">
+                                                <h2>@_comment.Name <span>2 Jan 2017</span></h2>
+                                                <p>
+                                                    @_comment.Message
+                                                </p>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div><!-- /.comment-section -->
+
+                    <div class="tr-comment-box">
+                        <div class="section-title">
+                            <h1><span>Leave a Comments</span></h1>
+                        </div>
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="one">Name</label>
+                                        <input type="text" class="form-control" required="required" name="Name" id="name">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="two">Email</label>
+                                        <input type="email" class="form-control" required="required" name="Email" id="email">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="three">Subject</label>
+                                        <input type="text" class="form-control" required="required" name="Subject" id="subject">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="four">Your message</label>
+                                        <textarea name="Message" required="required" class="form-control" rows="7" id="message"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="button" id="sendMessageBtn" class="btn btn-primary pull-right">Submit Message</button>
+                            </div>
+                        </form><!-- /.contact-form -->
+                    </div><!-- /.tr-comment-box -->
+                </div><!-- /.tr-content -->
+            </div>
+            <div class="col-lg-4 tr-sidebar tr-sticky" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+                <partial name="~/Views/Shared/_homePartial.cshtml" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Hello!</h4>
+            <p>Welcome to Niche Tours &amp; Travels.</p>
+            <hr>
+            <p class="mb-0">There is nothing to view at the moment but no worries. we'll soon be up and running.</p>
+        </div>
+    }
+}
+
+
+
+@section Scripts{
+
+    <script>
+        $(document).ready(() => {
+
+            fetch(`${window.location.origin}/articles/loadlatest`)
+                .then(result => result.json())
+                .then(response => {
+                    let d = ``;
+                    response.forEach((el, index) => {
+                        d += `
+                        <li class="tr-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <img class="img-fluid" src="${window.location.origin}/${el.imageURl}" alt="Image">
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <div class="catagory">
+                                    <span>${el.tags}</span>
+                                </div>
+                                <h2 class="entry-title">
+                                    ${el.title}
+                                </h2>
+                            </div><!-- /.post-content -->
+                        </li>`;
+                    });
+                    $('#lArticles').html(d);
+                })
+                .catch(err => console.log(err));
+
+
+            $('#sendMessageBtn').click(() => {
+                var comment = $('form').serialize();
+
+
+                fetch(`${window.location.origin}/comments/add?${comment}`)
+                    .then(result => result.json())
+                    .then(response => {
+
+                        
+
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+
+                        $('form').each(function () {
+                            $(this).find(':input').val('');
+                            $(this).find(':textarea').html('');
+                        });
+
+
+                        fetch(`${window.location.origin}/articles/LoadLastComment`)
+                            .then(result => result.json())
+                            .then(response => {
+                                let d = ``;
+                                response.d.forEach((el, index) => {
+                                    d += `
+                                                        <li class="media">
+                                                                <div class="commenter-avatar">
+                                                                    <a href="#"><img class="img-fluid img-circle" src="${el.imageUrl}" alt="Image"></a>
+                                                                </div>
+                                                                <div class="media-body">
+                                                                    <h2>${el.name} <span>${el.dateDuration}</span></h2>
+                                                                    <p>
+                                                                        ${el.message}
+                                                                    </p>
+                                                                </div>
+                                                            </li>`;
+                                });
+                                $('#post-comment').append(d);
+                            })
+                            .catch(err => console.log(err));
+
+
+                    })
+                    .catch(err => console.log(err));
+
+            })
+
+
+        });
+    </script>
+}

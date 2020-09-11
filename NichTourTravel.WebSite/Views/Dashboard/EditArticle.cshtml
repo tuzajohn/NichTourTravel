@@ -1,0 +1,378 @@
+﻿@model NewArticleViewModel
+@{
+    ViewData["Title"] = "EditArticle";
+}
+
+@{
+    if (Model != null)
+    {
+        if (Model.Message != null)
+        {
+            <div>@Html.Raw(Model.Message)</div>
+        }
+    }
+}
+<div class="card">
+    <div class="card-body">
+        <form id="form" action="addarticle" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="one">Title (*)</label>
+                        <input type="text" class="form-control item-required" value="@Model.Title" required="required" id="title" name="Title">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="file" class="form-control" accept=".png,.jpeg,.jpg" id="File" name="File" />
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Enter caption" id="caption" name="Caption" hidden />
+                    </div>
+                    <button type="button" id="vImgBtn" data-toggle="modal" data-target="#image-modal" class="btn btn-outline-secondary btn-block" disabled>View image</button>
+                </div>
+                <div class="col-md-8">
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <select class="custom-select item-required" id="tag-select" name="TagIds">
+                                            <option selected>Choose tag</option>
+                                            <option>Adventure</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" data-toggle="modal" data-target="#new-tag-modal" class="btn btn-block btn-outline-info">Add Tag</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <select class="custom-select item-required" id="authors" name="AuthorId">
+                                            <option>Choose author</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" data-toggle="modal" data-target="#new-author-modal" class="btn btn-block btn-outline-info">Add author</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Article content:</label>
+                        <textarea id="body" name="Content" class="form-control item-required" placeholder="Enter text" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-outline-primary" id="new-article-btn">Save</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="new-author-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New author form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>First name</label>
+                                    <input id="fname" name="FirstName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Last name</label>
+                                    <input id="lname" name="LastName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="authBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="new-tag-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New tag form</h5>
+            </div>
+            <div class="modal-body">
+                <form id="tagform">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tag name</label>
+                                    <input id="tagName" name="Name" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" id="closeTagBtn">Close</button>
+                <button type="button" class="btn btn-sm btn-success" id="tagBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="image-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New tag form</h5>
+            </div>
+            <div class="modal-body" id="img-modal">
+                <img id="img" src="#" class="" style="width:100%" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            const loadAuthors = () => {
+
+                $('#authors').html('<option>loading authors</option>');
+                fetch(`${window.location.origin}/author/loadall`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        let d = ``;
+                        $('#authors').html('<option value="">Select author</option>');
+                        result.forEach((el, index) => {
+                            var selected = false;
+                            if (el.id == '@Model.AuthorId') {
+                                selected = true;
+                            }
+
+                            $('#authors').append(new Option(`${el.firstName} ${el.lastName}`, el.id, selected));
+                            
+                        });
+                        if (result.lenght == 0) {
+                            $('#authors').html('<option>No authors found</option>');
+                        }
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#authors').html('<option>No authors found</option>');
+                    });
+            };
+            const loadTags = () => {
+                $('#tag-select').html('<option>loading tags</option>');
+                fetch(`${window.location.origin}/tags/loadall`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(result => {
+                        $('#tag-select').html('<option value="">Select tag</option>');
+                        result.forEach((el, index) => {
+                            var selected = false;
+                            if (el.id == '@Model.TagIds') {
+                                selected = true;
+                            }
+                            $('#tag-select').append(new Option(el.name, el.id, selected));
+                        });
+                        if (result.lenght == 0) {
+                            $('#tag-select').html('<option>No tags found</option>');
+                        }
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        $('#tag-select').html('<option>No tags found</option>');
+                    });
+            }
+            loadAuthors();
+            loadTags();
+            $('#authBtn').click(async () => {
+
+                run_waitMe($('#form'), 3, 'adding');
+                const fname = $('#fname').val();
+                const lname = $('#lname').val();
+                if (!fname || !lname) {
+                    showNotification('Oops', 'fill in both first and last name is required', 'warning');
+                    $('#form').waitMe('hide');
+                    return;
+                }
+
+                const formdData = $('#form').serialize();
+
+                fetch(`${window.location.origin}/author/addnew?${formdData}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#form').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        $('#fname').val('');
+                        $('#lname').val('');
+                        $('#new-author-modal').modal('hide');
+
+                        loadAuthors();
+                        showNotification('Great', response.message, 'success');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#form').waitMe('hide');
+                    })
+
+            });
+            $('#tagBtn').click(() => {
+                run_waitMe($('#tagform'), 3, 'adding');
+                const tagName = $('#tagName').val();
+                if (!tagName) {
+                    showNotification('Oops', 'Tag name is required', 'warning');
+                    $('#tagform').waitMe('hide');
+                    return;
+                }
+
+                const formdData = $('#tagform').serialize();
+                fetch(`${window.location.origin}/tags/addnew?${formdData}`)
+                    .then(result => {
+                        if (result.ok) {
+                            return result.json();
+                        }
+                    })
+                    .then(response => {
+                        $('#tagform').waitMe('hide');
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        $('#tagform').val('');
+                        $('#new-tag-modal').modal('hide');
+                        loadTags();
+                        showNotification('Great', response.message, 'success');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        showNotification('Oops', err, 'warning');
+                        $('#tagform').waitMe('hide');
+                    })
+            })
+
+
+            $('#closeBtn').click(() => {
+                $('#fname').val('');
+                $('#lname').val('');
+                $('#form').waitMe('hide');
+                $('#new-author-modal').modal('hide');
+            });
+            $('#closeTagBtn').click(() => {
+                $('#tagName').val('');
+                $('#tagform').waitMe('hide');
+                $('#new-tag-modal').modal('hide');
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                        $('#vImgBtn').removeAttr('disabled');
+                        $('#caption').removeAttr('hidden');
+                        $('#image-modal').modal('show');
+                        $('#img-modal').waitMe('hide');
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#File").change(function () {
+                run_waitMe($('#img-modal'), 3, 'loading');
+                readURL(this);
+            });
+
+
+            $('textarea').summernote({
+                placeholder: 'Write something',
+                tabsize: 4,
+                height: 200
+            });
+
+
+            $('#new-article-btn').click((e) => {
+                $('#form').submit(function (event) {
+                    run_waitMe($('#form'), 3, 'posting');
+                    event.preventDefault(); //prevent default action
+                    var post_url = $('#form').attr("action"); //get form action url
+                    var request_method = $('#form').attr("method"); //get form GET/POST method
+                    var viewModel = new FormData(this); //Encode form elements for submission
+
+                    $.ajax({
+                        url: post_url,
+                        method: request_method,
+                        data: viewModel,
+                        contentType: false,
+                        cache: false,
+                        processData: false
+                    }).done(function (response) { //
+                        $('#form').waitMe('hide');
+                        console.log(response.message)
+                        if (!response.check) {
+                            showNotification('Oops', response.message, 'warning');
+                            return;
+                        }
+                        showNotification('Great', response.message, 'success');
+                        window.location.reload(true);
+                    });
+                });
+
+            })
+
+        })
+    </script>
+}

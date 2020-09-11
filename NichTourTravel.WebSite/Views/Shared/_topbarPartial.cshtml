@@ -1,0 +1,51 @@
+﻿@{ 
+    var account = HttpContextAccessor.HttpContext.Session.GetString("account")?.FromJson<Account>() ?? default;
+}
+
+
+<div class="tr-topbar clearfix">
+    <div class="topbar-left">
+        <div class="breaking-news">
+            <span># Newsfeed</span>
+            <div id="ticker">
+                <ul id="tt">
+                </ul>
+            </div>
+        </div><!-- breaking-news -->
+    </div><!-- /.topbar-left -->
+    <div class="topbar-right">
+
+        @{
+            if (account != null)
+            {
+                <div class="user">
+                    <div class="user-image">
+                        <img class="img-fluid img-circle" src="~/images/others/user.png" alt="Image">
+                    </div>
+                    <div class="dropdown user-dropdown">
+                        Hello,
+                        <a href="#" aria-expanded="true">@account.Name<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                        <ul class="sub-menu text-left">
+                            <li><a href="~/dashboard">Dashboard</a></li>
+                            <li><a href="~/dashboard/newarticle">Article</a></li>
+                            <li><a href="~/settings">Settings</a></li>
+                            <li><a href="~/account/logout">Log Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        }
+
+        @*<div class="searchNlogin">
+            <ul>
+                <li class="search-icon"><i class="fa fa-search"></i></li>
+            </ul>
+            <div class="search">
+                <form role="form">
+                    <input type="text" class="search-form" autocomplete="off" placeholder="Type & Press Enter">
+                </form>
+            </div>
+        </div>*@
+    </div><!-- /.topbar-right -->
+</div><!-- /.tr-topbar -->
+

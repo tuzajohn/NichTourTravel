@@ -1,0 +1,58 @@
+﻿@model About
+@{
+    ViewData["Title"] = "About";
+}
+<partial name="~/views/shared/_topbarpartial.cshtml" />
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+
+                @if (Model != null)
+                {
+                    <h4 class="text-center">@Model.Title</h4>
+                    <hr />
+                    @Html.Raw(Model.Body)
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4 tr-sidebar tr-sticky">
+        <partial name="~/views/shared/_homepartial.cshtml" />
+    </div>
+</div><!-- row -->
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+             fetch(`${window.location.origin}/articles/loadlatest`)
+                .then(result => result.json())
+                .then(response => {
+                    let d = ``;
+                    response.forEach((el, index) => {
+                        d += `
+                        <li class="tr-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <img class="img-fluid" src="${window.location.origin}/${el.imageURl}" alt="Image">
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <div class="catagory">
+                                    <span>${el.tags}</span>
+                                </div>
+                                <h2 class="entry-title">
+                                    ${el.title}
+                                </h2>
+                            </div><!-- /.post-content -->
+                        </li>`;
+                    });
+                    $('#lArticles').html(d);
+                })
+                .catch(err => console.log(err));
+        });
+    </script>
+}
